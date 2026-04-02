@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://ddecosmo-dev.github.ioddecosmo.github.io//sitemap.xml
+Sitemap: https://ddecosmo-dev.github.io/Portfolio/sitemap.xml
