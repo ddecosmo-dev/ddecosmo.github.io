@@ -2,79 +2,105 @@
 layout: default
 ---
 <div class="post">
-  <header class="post-header">
-    <h1 class="post-title">
-      {% if site.title == 'blank' %}
-        <span class="font-weight-bold">{{ site.first_name }}</span> {{ site.middle_name }}
-        {{ site.last_name }}
-      {% else %}
-        {{ site.title }}
-      {% endif %}
-    </h1>
-    <p class="desc">{{ page.subtitle }}</p>
-  </header>
-
   <article>
+    
     {% if page.profile %}
-      <div class="profile float-{% if page.profile.align == 'left' %}left{% else %}right{% endif %}">
+      <div class="profile-section d-flex justify-content-center align-items-center flex-wrap mb-5 text-center text-md-left" style="gap: 2rem;">
+        
         {% if page.profile.image %}
-          {% assign profile_image_path = page.profile.image | prepend: 'assets/img/' %}
-          {% if page.profile.image_circular %}
-            {% assign profile_image_class = 'img-fluid z-depth-1 rounded-circle' %}
-          {% else %}
-            {% assign profile_image_class = 'img-fluid z-depth-1
-      rounded' %}
-          {% endif %}
-          {% capture sizes %}(min-width: {{ site.max_width }}) {{ site.max_width | minus: 30 | times: 0.3}}px, (min-width: 576px)
-      30vw, 95vw"{% endcapture %}
-          {%
-            include figure.liquid loading="eager" path=profile_image_path class=profile_image_class sizes=sizes alt=page.profile.image
-            cache_bust=true
-          %}
+          <div class="profile-image">
+            {% assign profile_image_path = page.profile.image | prepend: 'assets/img/' %}
+            <img src="{{ profile_image_path | relative_url }}" class="img-fluid z-depth-1 rounded-circle" alt="profile image" style="width: 150px; height: 150px; object-fit: cover;">
+          </div>
         {% endif %}
-        {% if page.profile.more_info %}
-          <div class="more-info">{{ page.profile.more_info }}</div>
-        {% endif %}
+
+        <div class="contact-info">
+          <h2 class="font-weight-bold mb-1">
+            {% if site.title == 'blank' %}
+              {{ site.first_name }} {{ site.middle_name }} {{ site.last_name }} /
+            {% else %}
+              {{ site.title }} /
+            {% endif %}
+          </h2>
+          
+          <p class="text-muted mb-2" style="font-size: 0.95rem;">
+            {{ site.affiliation | default: 'Affiliations. Address. Contacts. Motto. Etc. /' }}
+          </p>
+          
+          <div class="address-block mb-3 text-muted" style="font-size: 0.85rem; line-height: 1.4;">
+            <div>{{ site.phone | default: '555 your office number' }}</div>
+            <div>{{ site.address_street | default: '123 your address street' }}</div>
+            <div>{{ site.address_city_state | default: 'Your City, State 12345' }}</div>
+          </div>
+          
+          <div class="action-buttons">
+            <a href="{{ '/assets/pdf/resume.pdf' | relative_url }}" class="btn btn-outline-dark btn-sm rounded-pill px-3 mr-2">
+              <i class="fas fa-file-alt mr-1"></i> Resume <i class="fas fa-download ml-1"></i>
+            </a>
+            <a href="mailto:{{ site.email }}" class="btn btn-outline-dark btn-sm rounded-pill px-3">
+              <i class="fas fa-envelope mr-1"></i> Email Contact
+            </a>
+          </div>
+        </div>
       </div>
     {% endif %}
 
-    <div class="clearfix">{{ content }}</div>
+    <div class="about-section mb-5">
+      <h3 class="mb-3">Longer About Me & Work Experience</h3>
+      <div class="clearfix">{{ content }}</div>
+    </div>
 
-    <!-- News -->
-    {% if page.announcements and page.announcements.enabled %}
-      <h2>
-        <a href="{{ '/news/' | relative_url }}" style="color: inherit">news</a>
-      </h2>
-      {% include news.liquid limit=true %}
-    {% endif %}
-
-    <!-- Latest posts -->
-    {% if page.latest_posts and page.latest_posts.enabled %}
-      <h2>
-        <a href="{{ '/blog/' | relative_url }}" style="color: inherit">latest posts</a>
-      </h2>
-      {% include latest_posts.liquid %}
-    {% endif %}
-
-    <!-- Selected papers -->
-    {% if page.selected_papers %}
-      <h2>
-        <a href="{{ '/publications/' | relative_url }}" style="color: inherit">selected publications</a>
-      </h2>
-      {% include selected_papers.liquid %}
-    {% endif %}
-
-    <!-- Social -->
-    {% if page.social %}
-      <div class="social">
-        <div class="contact-icons">{% social_links %}</div>
-
-        <div class="contact-note">{{ site.contact_note }}</div>
+    <div class="projects-section mb-5">
+      <h5 class="text-uppercase font-weight-bold mb-3">Projects Grid</h5>
+      <div class="row">
+        {% for project in site.projects limit: 8 %}
+          <div class="col-12 col-md-6 col-lg-3 mb-3">
+            <div class="card h-100 flex-row border shadow-sm">
+              <div class="card-img-left bg-light d-flex justify-content-center align-items-center" style="width: 35%; min-height: 90px; border-right: 1px solid rgba(0,0,0,.125);">
+                <i class="far fa-image text-muted fa-2x"></i>
+              </div>
+              <div class="card-body p-2 d-flex flex-column justify-content-center" style="width: 65%;">
+                <h6 class="card-title font-weight-bold mb-1" style="font-size: 0.85rem;">{{ project.title | default: 'Project Name' }}</h6>
+                <p class="card-text text-muted mb-2" style="font-size: 0.75rem; line-height: 1.1;">
+                  {{ project.description | default: 'Project learning study for a brief description...' | truncate: 45 }}
+                </p>
+                <div class="project-links mt-auto" style="font-size: 0.75rem;">
+                  <a href="{{ project.url | relative_url }}" class="text-decoration-none mr-2">
+                    <i class="fas fa-file-alt"></i> View Details
+                  </a>
+                  {% if project.github %}
+                    <a href="{{ project.github }}" class="text-decoration-none text-dark">
+                      <i class="fab fa-github"></i> GitHub
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
       </div>
-    {% endif %}
+    </div>
 
-    {% if site.newsletter and site.newsletter.enabled and site.footer_fixed %}
-      {% include newsletter.liquid center=true %}
-    {% endif %}
+    <div class="skills-section mb-5">
+      <h5 class="text-uppercase font-weight-bold mb-3">Skills</h5>
+      {% assign skills = "Python:85,LaTeX:60,Data Science:90,Research Methods:100" | split: "," %}
+      
+      <div class="skills-list">
+        {% for skill_pair in skills %}
+          {% assign skill = skill_pair | split: ":" %}
+          <div class="row align-items-center mb-2">
+            <div class="col-4 col-md-2">
+              <span class="font-weight-bold" style="font-size: 0.9rem;">{{ skill[0] }}</span>
+            </div>
+            <div class="col-8 col-md-10">
+              <div class="progress" style="height: 8px;">
+                <div class="progress-bar" role="progressbar" style="width: {{ skill[1] }}%; background-color: #8fa5c7;" aria-valuenow="{{ skill[1] }}" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
   </article>
 </div>
